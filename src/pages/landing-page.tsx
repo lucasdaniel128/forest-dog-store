@@ -1,15 +1,16 @@
 import { SEO } from "@/components/seo";
 import { SiteHeader } from "@/components/layout/site-header";
-import { HeroSection } from "@/components/sections/hero-section";
-import { GallerySection } from "@/components/sections/gallery-section";
-import { MemorySection } from "@/components/sections/memory-section";
-import { WhyChooseJoyfoxSection } from "@/components/sections/why-choose-joyfox-section";
-import { DurabilitySection } from "@/components/sections/durability-section";
-import { ComparisonImageSection } from "@/components/sections/comparison-image-section";
-import { SocialProofSection } from "@/components/sections/social-proof-section";
-import { PurchaseConfidenceSection } from "@/components/sections/purchase-confidence-section";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { ProductHeroSection } from "@/components/sections/product-hero-section";
+import { BenefitStrip } from "@/components/sections/benefit-strip";
+import { StorySection } from "@/components/sections/story-section";
+import { OpeningDemoSection } from "@/components/sections/opening-demo-section";
+import { ProductDetailsSection } from "@/components/sections/product-details-section";
+import { ComparisonSection } from "@/components/sections/comparison-section";
+import { PurchaseProcessSection } from "@/components/sections/purchase-process-section";
+import { DeliverySection } from "@/components/sections/delivery-section";
 import { FaqSection } from "@/components/sections/faq-section";
-import { ClosingSection } from "@/components/sections/closing-section";
+import { FinalPurchaseSection } from "@/components/sections/final-purchase-section";
 import { MobilePurchaseBar } from "@/components/sections/mobile-purchase-bar";
 
 export function LandingPage() {
@@ -20,16 +21,17 @@ export function LandingPage() {
         description="Barraca Automática Joyfox com montagem prática, amplo espaço interno e proteção para seus momentos ao ar livre."
       />
       <SiteHeader />
-      <HeroSection />
-      <GallerySection />
-      <MemorySection />
-      <WhyChooseJoyfoxSection />
-      <DurabilitySection />
-      <ComparisonImageSection />
-      <SocialProofSection />
-      <PurchaseConfidenceSection />
+      <ProductHeroSection />
+      <BenefitStrip />
+      <StorySection />
+      <OpeningDemoSection />
+      <ProductDetailsSection />
+      <ComparisonSection />
+      <PurchaseProcessSection />
+      <DeliverySection />
       <FaqSection />
-      <ClosingSection />
+      <FinalPurchaseSection />
+      <SiteFooter />
       <MobilePurchaseBar />
     </>
   );

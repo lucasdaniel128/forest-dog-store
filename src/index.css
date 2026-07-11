@@ -9,12 +9,15 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-forest: var(--forest);
+  --color-forest-light: var(--forest-light);
   --color-forest-dark: var(--forest-dark);
   --color-cta: var(--cta);
   --color-cta-hover: var(--cta-hover);
-  --color-muted-custom: var(--muted-custom);
+  --color-muted: var(--muted);
   --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
   --color-border: var(--border);
+  --color-sand: var(--sand);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -24,15 +27,18 @@
 
 @layer base {
   :root {
-    --background: #F8F7F3;
-    --foreground: #171915;
-    --forest: #203A2A;
-    --forest-dark: #15281C;
-    --cta: #C96A2E;
-    --cta-hover: #AD5722;
-    --muted-custom: #686B64;
-    --border: #E3E1DA;
-    --surface: #FFFFFF;
+    --background: #F3EFE7;
+    --foreground: #171914;
+    --forest: #263728;
+    --forest-light: #344A36;
+    --forest-dark: #121A14;
+    --cta: #C96B3A;
+    --cta-hover: #AD572E;
+    --muted: #666A61;
+    --border: #DDD8CE;
+    --surface: #FBFAF7;
+    --surface-strong: #FFFFFF;
+    --sand: #E8E0D3;
     --radius: 0.625rem;
   }
 
