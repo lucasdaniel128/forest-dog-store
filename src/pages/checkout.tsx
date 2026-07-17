@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TreePine, ArrowLeft, QrCode, CreditCard, FileText } from "lucide-react";
+import { TreePine, ArrowLeft, QrCode, CreditCard, FileText, Loader2 } from "lucide-react";
 import { SEO } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/checkout/progress-bar";
@@ -11,6 +11,7 @@ import {
   maskCPF,
   maskPhone,
   maskCEP,
+  unmask,
   validateCheckoutData,
   saveCheckoutData,
   loadCheckoutData,
@@ -22,17 +23,20 @@ type PaymentMethod = "pix" | "card" | "boleto";
 const saved = loadCheckoutData();
 
 const inputClass =
-  "h-12 rounded-xl border border-border bg-surface-strong px-4 text-[15px] text-foreground placeholder:text-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest";
+  "h-12 min-w-0 rounded-xl border border-border bg-surface-strong px-4 text-[15px] text-foreground placeholder:text-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest";
+
+const inputLoadingClass =
+  "h-12 min-w-0 rounded-xl border border-border bg-surface-strong pl-4 pr-10 text-[15px] text-foreground placeholder:text-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest";
 
 const selectClass =
-  "h-12 rounded-xl border border-border bg-surface-strong px-4 text-[15px] text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22/%3E%3C/svg%3E')] bg-[length:16px] bg-[right_12px_center] bg-no-repeat pr-10";
+  "h-12 min-w-0 rounded-xl border border-border bg-surface-strong px-4 text-[15px] text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22/%3E%3C/svg%3E')] bg-[length:16px] bg-[right_12px_center] bg-no-repeat pr-10";
 
 const errorInputClass = "border-red-500 focus-visible:outline-red-500";
 
 const paymentOptions: { value: PaymentMethod; label: string; icon: typeof QrCode; description: string }[] = [
   { value: "pix", label: "Pix", icon: QrCode, description: "Pagamento instantâneo" },
-  { value: "card", label: "Cartão de crédito", icon: CreditCard, description: "Parcele em até 12x" },
-  { value: "boleto", label: "Boleto bancário", icon: FileText, description: "Vencimento em 3 dias úteis" },
+  { value: "card", label: "Cartão de crédito", icon: CreditCard, description: "Parcelamento disponível" },
+  { value: "boleto", label: "Boleto bancário", icon: FileText, description: "Vencimento informado no checkout" },
 ];
 
 export function CheckoutPage() {
@@ -40,6 +44,10 @@ export function CheckoutPage() {
   const firstErrorRef = useRef<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pix");
+  const [cepLoading, setCepLoading] = useState(false);
+  const [cepError, setCepError] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const numberRef = useRef<HTMLInputElement>(null);
 
   const [data, setData] = useState<CheckoutData>(() => ({
     customer: {
@@ -58,6 +66,52 @@ export function CheckoutPage() {
       state: saved?.shipping.state ?? "",
     },
   }));
+
+  useEffect(() => {
+    const raw = unmask(data.shipping.cep);
+    if (raw.length !== 8) {
+      return;
+    }
+
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    setCepLoading(true);
+    setCepError(null);
+
+    fetch(`https://viacep.com.br/ws/${raw}/json/`, { signal: controller.signal })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("network");
+        const json = await res.json();
+        if (json.erro) {
+          setCepError("CEP não encontrado. Confira os números informados.");
+          setCepLoading(false);
+          return;
+        }
+        setData((prev) => ({
+          ...prev,
+          shipping: {
+            ...prev.shipping,
+            street: json.logradouro ?? prev.shipping.street,
+            neighborhood: json.bairro ?? prev.shipping.neighborhood,
+            city: json.localidade ?? prev.shipping.city,
+            state: json.uf ?? prev.shipping.state,
+          },
+        }));
+        setCepLoading(false);
+        setTimeout(() => numberRef.current?.focus(), 60);
+      })
+      .catch((err) => {
+        if (err?.name === "AbortError") return;
+        setCepError(null);
+        setCepLoading(false);
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, [data.shipping.cep]);
 
   const updateCustomer = useCallback(
     (field: keyof CheckoutData["customer"], value: string) => {
@@ -159,8 +213,8 @@ export function CheckoutPage() {
             <ProgressBar currentStep={1} />
           </div>
 
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_360px] lg:gap-14">
-            <form onSubmit={handleSubmit} noValidate>
+          <div className="grid grid-cols-1 gap-10 min-w-0 lg:grid-cols-[1fr_360px] lg:gap-14">
+            <form onSubmit={handleSubmit} noValidate className="min-w-0">
               <div className="flex flex-col gap-8">
                 <div>
                   <h2 className="text-lg font-bold tracking-tight text-foreground">
@@ -271,7 +325,7 @@ export function CheckoutPage() {
                 </div>
 
                 <div className="flex flex-col gap-4">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_1fr]">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="flex flex-col gap-1.5">
                       <label
                         htmlFor="cep"
@@ -279,20 +333,34 @@ export function CheckoutPage() {
                       >
                         CEP
                       </label>
-                      <input
-                        id="cep"
-                        name="cep"
-                        type="text"
-                        inputMode="numeric"
-                        value={data.shipping.cep}
-                        onChange={(e) =>
-                          updateShipping("cep", maskCEP(e.target.value))
-                        }
-                        placeholder="00000-000"
-                        maxLength={9}
-                        className={`${inputClass} ${errors.cep ? errorInputClass : ""}`}
-                      />
-                      {inputError("cep")}
+                      <div className="relative">
+                        <input
+                          id="cep"
+                          name="cep"
+                          type="text"
+                          inputMode="numeric"
+                          value={data.shipping.cep}
+                          onChange={(e) => {
+                            setCepError(null);
+                            updateShipping("cep", maskCEP(e.target.value));
+                          }}
+                          placeholder="00000-000"
+                          maxLength={9}
+                          className={`${cepLoading ? inputLoadingClass : inputClass} ${errors.cep ? errorInputClass : ""}`}
+                        />
+                        {cepLoading && (
+                          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          </span>
+                        )}
+                      </div>
+                      {errors.cep
+                        ? inputError("cep")
+                        : cepError && (
+                            <span className="text-[12px] text-red-500">
+                              {cepError}
+                            </span>
+                          )}
                     </div>
 
                     <div className="flex flex-col gap-1.5">
@@ -348,6 +416,7 @@ export function CheckoutPage() {
                         Número
                       </label>
                       <input
+                        ref={numberRef}
                         id="number"
                         name="number"
                         type="text"
@@ -381,7 +450,7 @@ export function CheckoutPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_1fr]">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="flex flex-col gap-1.5">
                       <label
                         htmlFor="neighborhood"
@@ -435,7 +504,7 @@ export function CheckoutPage() {
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2.5">
                   {paymentOptions.map((option) => {
                     const Icon = option.icon;
                     const isSelected = paymentMethod === option.value;
@@ -444,20 +513,20 @@ export function CheckoutPage() {
                         key={option.value}
                         type="button"
                         onClick={() => setPaymentMethod(option.value)}
-                        className={`flex items-center gap-4 rounded-xl border px-5 py-4 text-left transition-colors ${
+                        className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors duration-150 min-w-0 ${
                           isSelected
                             ? "border-forest bg-forest/5"
-                            : "border-border bg-surface-strong hover:border-muted"
+                            : "border-border bg-surface-strong hover:border-muted/60"
                         }`}
                       >
                         <span
-                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
-                            isSelected ? "bg-forest text-white" : "bg-sand text-muted"
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors duration-150 ${
+                            isSelected ? "bg-forest text-white" : "bg-sand/60 text-muted"
                           }`}
                         >
-                          <Icon className="h-5 w-5" aria-hidden="true" />
+                          <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
                         </span>
-                        <div className="flex flex-col gap-0.5">
+                        <div className="flex min-w-0 flex-col gap-px">
                           <span className="text-sm font-medium text-foreground">
                             {option.label}
                           </span>
@@ -466,15 +535,15 @@ export function CheckoutPage() {
                           </span>
                         </div>
                         <span
-                          className={`ml-auto h-5 w-5 shrink-0 rounded-full border-2 ${
+                          className={`ml-auto h-[18px] w-[18px] shrink-0 rounded-full border-[1.5px] transition-colors duration-150 ${
                             isSelected
                               ? "border-forest bg-forest"
-                              : "border-muted"
+                              : "border-muted/40"
                           }`}
                         >
                           {isSelected && (
                             <span className="flex h-full w-full items-center justify-center">
-                              <span className="h-2 w-2 rounded-full bg-white" />
+                              <span className="h-[6px] w-[6px] rounded-full bg-white" />
                             </span>
                           )}
                         </span>
@@ -490,7 +559,7 @@ export function CheckoutPage() {
                 )}
               </div>
 
-              <div className="mt-8 lg:hidden">
+              <div className="mt-8 pb-4 lg:hidden">
                 <Button type="submit" variant="cta" size="full">
                   {getButtonLabel()}
                 </Button>
@@ -503,7 +572,7 @@ export function CheckoutPage() {
               </div>
             </form>
 
-            <aside className="lg:sticky lg:top-[88px] lg:self-start">
+            <aside className="min-w-0 lg:sticky lg:top-[88px] lg:self-start">
               <OrderSummary paymentMethod={paymentMethod} />
             </aside>
           </div>
