@@ -2,7 +2,17 @@ import { PRODUCT } from "@/constants";
 import { formatPrice, PRODUCT_PRICE_CENTS } from "@/lib/checkout-utils";
 import productImage from "@/assets/images/D_NQ_NP_2X_981066-MLA113602445263_062026-F.webp";
 
-export function OrderSummary() {
+const paymentLabels: Record<string, string> = {
+  pix: "Pix",
+  card: "Cartão de crédito",
+  boleto: "Boleto bancário",
+};
+
+interface OrderSummaryProps {
+  paymentMethod?: string;
+}
+
+export function OrderSummary({ paymentMethod = "pix" }: OrderSummaryProps) {
   return (
     <div className="rounded-2xl border border-border bg-surface-strong p-5">
       <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
@@ -28,7 +38,9 @@ export function OrderSummary() {
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between text-[13px]">
             <span className="text-muted">Pagamento</span>
-            <span className="font-medium text-foreground">Pix</span>
+            <span className="font-medium text-foreground">
+              {paymentLabels[paymentMethod] || "Pix"}
+            </span>
           </div>
           <div className="flex items-center justify-between text-[13px]">
             <span className="text-muted">Entrega</span>

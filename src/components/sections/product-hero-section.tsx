@@ -73,7 +73,7 @@ export function ProductHeroSection() {
               </Button>
 
               <div className="flex items-center gap-4 text-[11px] text-muted/70">
-                <span>Pagamento via Pix</span>
+                <span>Pagamento via Pix ou cartão</span>
                 <span className="h-3 w-px bg-border" />
                 <span>Compra finalizada no site</span>
                 <span className="h-3 w-px bg-border" />

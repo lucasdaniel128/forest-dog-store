@@ -67,7 +67,7 @@ export function FinalPurchaseSection() {
           </motion.div>
 
           <motion.div variants={fadeInUp} className="flex items-center gap-4 text-[11px] text-white/25">
-            <span>Pagamento via Pix</span>
+            <span>Pagamento via Pix ou cartão</span>
             <span className="h-3 w-px bg-white/15" />
             <span>Compra finalizada no site</span>
             <span className="h-3 w-px bg-white/15" />

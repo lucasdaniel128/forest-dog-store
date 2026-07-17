@@ -156,7 +156,7 @@ export function createOrderSummary(_checkoutData: CheckoutData): OrderSummary {
     quantity: 1,
     unitPrice: PRODUCT_PRICE_CENTS,
     totalPrice: PRODUCT_PRICE_CENTS,
-    installments: "3x de R$ 55,00",
+    installments: "Parcelamento disponível no cartão",
     paymentMethod: "Pix",
     estimatedDelivery: "Prazo de entrega calculado conforme o CEP informado",
   };

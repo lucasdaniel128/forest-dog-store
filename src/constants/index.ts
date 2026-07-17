@@ -14,10 +14,12 @@ export const PRODUCT = {
   capacity: "5–6 pessoas",
   price: "R$ 164,99",
   priceRaw: 164.99,
-  installments: "3x de R$ 55,00",
+  installments: "Parcelamento disponível no cartão",
   ctaText: "COMPRAR AGORA",
   purchaseSectionId: "purchase",
 } as const;
+
+export const APP_MAX_CHECKOUT_URL = "https://forestdog.carrinho.app/one-checkout/ocmtb/37199814" as const;
 
 export const META_PIXEL_ID = "" as const;
 

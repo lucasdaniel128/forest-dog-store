@@ -1,11 +1,11 @@
 import { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { TreePine, ArrowLeft } from "lucide-react";
+import { TreePine, ArrowLeft, QrCode, CreditCard, FileText } from "lucide-react";
 import { SEO } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/checkout/progress-bar";
 import { OrderSummary } from "@/components/checkout/order-summary";
-import { SITE_CONFIG } from "@/constants";
+import { SITE_CONFIG, APP_MAX_CHECKOUT_URL } from "@/constants";
 import type { CheckoutData } from "@/types/checkout";
 import {
   maskCPF,
@@ -17,6 +17,8 @@ import {
   BRAZILIAN_STATES,
 } from "@/lib/checkout-utils";
 
+type PaymentMethod = "pix" | "card" | "boleto";
+
 const saved = loadCheckoutData();
 
 const inputClass =
@@ -27,10 +29,17 @@ const selectClass =
 
 const errorInputClass = "border-red-500 focus-visible:outline-red-500";
 
+const paymentOptions: { value: PaymentMethod; label: string; icon: typeof QrCode; description: string }[] = [
+  { value: "pix", label: "Pix", icon: QrCode, description: "Pagamento instantâneo" },
+  { value: "card", label: "Cartão de crédito", icon: CreditCard, description: "Parcele em até 12x" },
+  { value: "boleto", label: "Boleto bancário", icon: FileText, description: "Vencimento em 3 dias úteis" },
+];
+
 export function CheckoutPage() {
   const navigate = useNavigate();
   const firstErrorRef = useRef<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pix");
 
   const [data, setData] = useState<CheckoutData>(() => ({
     customer: {
@@ -88,10 +97,26 @@ export function CheckoutPage() {
 
       setErrors({});
       saveCheckoutData(data);
-      navigate("/checkout/pix");
+
+      if (paymentMethod === "pix") {
+        navigate("/checkout/pix");
+      } else {
+        window.location.assign(APP_MAX_CHECKOUT_URL);
+      }
     },
-    [data, navigate],
+    [data, navigate, paymentMethod],
   );
+
+  const getButtonLabel = () => {
+    switch (paymentMethod) {
+      case "pix":
+        return "PAGAR COM PIX";
+      case "card":
+        return "PAGAR COM CARTÃO";
+      case "boleto":
+        return "GERAR BOLETO";
+    }
+  };
 
   const inputError = (field: string) =>
     errors[field] ? (
@@ -241,7 +266,7 @@ export function CheckoutPage() {
                     Endereço de entrega
                   </h2>
                   <p className="mt-1 text-[13px] text-muted">
-                    Informe o endereço para receiving da sua encomenda.
+                    Informe o endereço para recebimento da sua encomenda.
                   </p>
                 </div>
 
@@ -400,21 +425,86 @@ export function CheckoutPage() {
                 </div>
               </div>
 
+              <div className="mt-10 flex flex-col gap-8">
+                <div>
+                  <h2 className="text-lg font-bold tracking-tight text-foreground">
+                    Forma de pagamento
+                  </h2>
+                  <p className="mt-1 text-[13px] text-muted">
+                    Escolha como deseja pagar.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  {paymentOptions.map((option) => {
+                    const Icon = option.icon;
+                    const isSelected = paymentMethod === option.value;
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setPaymentMethod(option.value)}
+                        className={`flex items-center gap-4 rounded-xl border px-5 py-4 text-left transition-colors ${
+                          isSelected
+                            ? "border-forest bg-forest/5"
+                            : "border-border bg-surface-strong hover:border-muted"
+                        }`}
+                      >
+                        <span
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${
+                            isSelected ? "bg-forest text-white" : "bg-sand text-muted"
+                          }`}
+                        >
+                          <Icon className="h-5 w-5" aria-hidden="true" />
+                        </span>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-sm font-medium text-foreground">
+                            {option.label}
+                          </span>
+                          <span className="text-[12px] text-muted">
+                            {option.description}
+                          </span>
+                        </div>
+                        <span
+                          className={`ml-auto h-5 w-5 shrink-0 rounded-full border-2 ${
+                            isSelected
+                              ? "border-forest bg-forest"
+                              : "border-muted"
+                          }`}
+                        >
+                          {isSelected && (
+                            <span className="flex h-full w-full items-center justify-center">
+                              <span className="h-2 w-2 rounded-full bg-white" />
+                            </span>
+                          )}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {paymentMethod !== "pix" && (
+                  <p className="text-[13px] text-muted">
+                    Pagamento processado com segurança pela Appmax.
+                  </p>
+                )}
+              </div>
+
               <div className="mt-8 lg:hidden">
                 <Button type="submit" variant="cta" size="full">
-                  CONTINUAR PARA O PIX
+                  {getButtonLabel()}
                 </Button>
               </div>
 
               <div className="mt-6 hidden lg:block">
                 <Button type="submit" variant="cta" size="full">
-                  CONTINUAR PARA O PIX
+                  {getButtonLabel()}
                 </Button>
               </div>
             </form>
 
             <aside className="lg:sticky lg:top-[88px] lg:self-start">
-              <OrderSummary />
+              <OrderSummary paymentMethod={paymentMethod} />
             </aside>
           </div>
         </div>
