@@ -14,25 +14,25 @@ interface ProgressBarProps {
 export function ProgressBar({ currentStep }: ProgressBarProps) {
   return (
     <nav aria-label="Progresso do checkout" className="w-full">
-      <ol className="flex items-center justify-between">
+      <ol className="flex items-center">
         {steps.map((step, index) => {
           const isCompleted = currentStep > step.id;
           const isCurrent = currentStep === step.id;
 
           return (
             <li key={step.id} className="flex flex-1 items-center">
-              <div className="flex w-full flex-col items-center gap-2">
-                <div className="flex items-center gap-3">
+              <div className="flex w-full flex-col items-center gap-1.5">
+                <div className="flex w-full items-center gap-2">
                   <span
                     className={cn(
-                      "flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-colors duration-200",
+                      "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold transition-colors duration-200",
                       isCompleted && "bg-forest text-white",
                       isCurrent && "bg-cta text-white",
-                      !isCompleted && !isCurrent && "bg-border text-muted",
+                      !isCompleted && !isCurrent && "bg-sand text-muted",
                     )}
                   >
                     {isCompleted ? (
-                      <Check className="h-4 w-4" aria-hidden="true" />
+                      <Check className="h-3.5 w-3.5" strokeWidth={2.5} aria-hidden="true" />
                     ) : (
                       step.id
                     )}
@@ -48,7 +48,7 @@ export function ProgressBar({ currentStep }: ProgressBarProps) {
                 </div>
                 <span
                   className={cn(
-                    "text-xs font-medium",
+                    "text-[11px] font-medium",
                     isCurrent ? "text-foreground" : "text-muted",
                   )}
                 >
