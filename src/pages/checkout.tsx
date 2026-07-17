@@ -11,6 +11,8 @@ import {
   UserRound,
   MapPin,
   LockKeyhole,
+  PackageCheck,
+  ChevronRight,
 } from "lucide-react";
 import { SEO } from "@/components/seo";
 import { Button } from "@/components/ui/button";
@@ -34,13 +36,13 @@ type PaymentMethod = "pix" | "card" | "boleto";
 const saved = loadCheckoutData();
 
 const inputClass =
-  "h-[48px] min-w-0 rounded-lg border border-border bg-white px-3.5 text-[14px] text-foreground placeholder:text-muted/45 focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-forest/40";
+  "h-[50px] min-w-0 rounded-xl border border-border bg-white px-4 text-[14px] text-foreground placeholder:text-muted/40 focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-forest/30 transition-colors";
 
 const inputLoadingClass =
-  "h-[48px] min-w-0 rounded-lg border border-border bg-white pl-3.5 pr-9 text-[14px] text-foreground placeholder:text-muted/45 focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-forest/40";
+  "h-[50px] min-w-0 rounded-xl border border-border bg-white pl-4 pr-10 text-[14px] text-foreground placeholder:text-muted/40 focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-forest/30 transition-colors";
 
 const selectClass =
-  "h-[48px] min-w-0 rounded-lg border border-border bg-white px-3.5 text-[14px] text-foreground focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-forest/40 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22/%3E%3C/svg%3E')] bg-[length:16px] bg-[right_10px_center] bg-no-repeat pr-9";
+  "h-[50px] min-w-0 rounded-xl border border-border bg-white px-4 text-[14px] text-foreground focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-forest/30 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22/%3E%3C/svg%3E')] bg-[length:16px] bg-[right_12px_center] bg-no-repeat pr-10 transition-colors";
 
 const errorInputClass = "border-red-400 focus-visible:outline-red-400";
 
@@ -49,6 +51,12 @@ const paymentOptions: { value: PaymentMethod; label: string; icon: typeof QrCode
   { value: "card", label: "Cartão de crédito", icon: CreditCard, description: "Parcelamento disponível" },
   { value: "boleto", label: "Boleto bancário", icon: FileText, description: "Vencimento informado no checkout" },
 ];
+
+const trustItems = [
+  { icon: ShieldCheck, label: "Pagamento protegido" },
+  { icon: LockKeyhole, label: "Dados usados somente para o pedido" },
+  { icon: PackageCheck, label: "Acompanhamento após a compra" },
+] as const;
 
 export function CheckoutPage() {
   const navigate = useNavigate();
@@ -188,10 +196,11 @@ export function CheckoutPage() {
       <span className="mt-1 text-[12px] text-red-500">{errors[field]}</span>
     ) : null;
 
-  const sectionCard = "rounded-xl border border-border/70 bg-surface-strong p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)] sm:p-5";
-  const sectionHeader = "flex items-center gap-2.5 mb-4";
-  const sectionIcon = "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-forest/8 text-forest";
-  const sectionTitle = "text-[15px] font-semibold text-foreground";
+  const card = "rounded-2xl border border-border bg-surface-strong p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] sm:p-6";
+  const sectionHead = "flex items-center gap-3 mb-5";
+  const sectionIconCircle = "flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-forest text-white";
+  const sectionTitle = "text-base font-bold text-foreground";
+  const labelClass = "text-[13px] font-medium text-foreground";
 
   return (
     <>
@@ -200,28 +209,28 @@ export function CheckoutPage() {
         description="Finalize sua compra da Barraca Automática Joyfox."
       />
 
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-surface/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-[52px] max-w-7xl items-center justify-between px-4 sm:h-[56px] sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-white/95 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-xl">
+        <div className="mx-auto flex h-[60px] max-w-7xl items-center justify-between px-4 sm:h-[64px] sm:px-6 lg:px-8">
           <button
             onClick={() => navigate("/")}
             className="flex items-center gap-1.5 text-[13px] text-muted transition-colors hover:text-foreground"
           >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             <span className="hidden sm:inline">Voltar</span>
           </button>
 
-          <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-forest text-white">
-              <TreePine className="h-3.5 w-3.5" aria-hidden="true" />
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-forest text-white shadow-sm shadow-forest/20">
+              <TreePine className="h-4 w-4" aria-hidden="true" />
             </span>
-            <span className="text-[13px] font-bold tracking-tight text-foreground">
+            <span className="text-[14px] font-bold tracking-tight text-foreground">
               {SITE_CONFIG.name}
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-[12px] text-muted">
-            <ShieldCheck className="h-3.5 w-3.5 text-forest/70" aria-hidden="true" />
-            <span className="hidden sm:inline">Ambiente seguro</span>
+          <div className="flex items-center gap-1.5 rounded-full bg-forest/5 px-3 py-1.5">
+            <ShieldCheck className="h-3.5 w-3.5 text-forest" aria-hidden="true" />
+            <span className="text-[11px] font-semibold text-forest">Ambiente seguro</span>
           </div>
         </div>
       </header>
@@ -233,31 +242,34 @@ export function CheckoutPage() {
           </div>
 
           <div className="mb-6 sm:mb-8">
-            <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+            <h1 className="text-[22px] font-extrabold tracking-tight text-foreground sm:text-[26px]">
               Finalizar compra
             </h1>
-            <p className="mt-1 text-[13px] text-muted">
-              Preencha seus dados para concluir o pedido.
+            <p className="mt-1.5 text-[14px] text-muted">
+              Confira seus dados e escolha a forma de pagamento.
+            </p>
+            <p className="mt-0.5 text-[13px] text-muted/70">
+              Compra segura e acompanhamento do pedido.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 min-w-0 lg:grid-cols-[1fr_340px] lg:gap-10">
+          <div className="grid grid-cols-1 gap-8 min-w-0 lg:grid-cols-[1fr_380px] lg:gap-10">
             <form onSubmit={handleSubmit} noValidate className="min-w-0">
-              <div className="flex flex-col gap-5">
-                <div className={sectionCard}>
-                  <div className={sectionHeader}>
-                    <span className={sectionIcon}>
+              <div className="flex flex-col gap-6">
+                <div className={card}>
+                  <div className={sectionHead}>
+                    <span className={sectionIconCircle}>
                       <UserRound className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
                     </span>
-                    <h2 className={sectionTitle}>Dados pessoais</h2>
+                    <div>
+                      <h2 className={sectionTitle}>Dados pessoais</h2>
+                      <p className="text-[12px] text-muted">Informações para contato e entrega</p>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-3.5">
+                  <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="fullName"
-                        className="text-[13px] font-medium text-foreground"
-                      >
+                      <label htmlFor="fullName" className={labelClass}>
                         Nome completo
                       </label>
                       <input
@@ -272,12 +284,9 @@ export function CheckoutPage() {
                       {inputError("fullName")}
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div className="flex flex-col gap-1.5">
-                        <label
-                          htmlFor="email"
-                          className="text-[13px] font-medium text-foreground"
-                        >
+                        <label htmlFor="email" className={labelClass}>
                           E-mail
                         </label>
                         <input
@@ -293,10 +302,7 @@ export function CheckoutPage() {
                       </div>
 
                       <div className="flex flex-col gap-1.5">
-                        <label
-                          htmlFor="cpf"
-                          className="text-[13px] font-medium text-foreground"
-                        >
+                        <label htmlFor="cpf" className={labelClass}>
                           CPF
                         </label>
                         <input
@@ -317,10 +323,7 @@ export function CheckoutPage() {
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="phone"
-                        className="text-[13px] font-medium text-foreground"
-                      >
+                      <label htmlFor="phone" className={labelClass}>
                         Telefone
                       </label>
                       <input
@@ -341,21 +344,21 @@ export function CheckoutPage() {
                   </div>
                 </div>
 
-                <div className={sectionCard}>
-                  <div className={sectionHeader}>
-                    <span className={sectionIcon}>
+                <div className={card}>
+                  <div className={sectionHead}>
+                    <span className={sectionIconCircle}>
                       <MapPin className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
                     </span>
-                    <h2 className={sectionTitle}>Endereço de entrega</h2>
+                    <div>
+                      <h2 className={sectionTitle}>Endereço de entrega</h2>
+                      <p className="text-[12px] text-muted">Informe onde deseja receber</p>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-3.5">
-                    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                  <div className="flex flex-col gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div className="flex flex-col gap-1.5">
-                        <label
-                          htmlFor="cep"
-                          className="text-[13px] font-medium text-foreground"
-                        >
+                        <label htmlFor="cep" className={labelClass}>
                           CEP
                         </label>
                         <div className="relative">
@@ -389,10 +392,7 @@ export function CheckoutPage() {
                       </div>
 
                       <div className="flex flex-col gap-1.5">
-                        <label
-                          htmlFor="state"
-                          className="text-[13px] font-medium text-foreground"
-                        >
+                        <label htmlFor="state" className={labelClass}>
                           Estado
                         </label>
                         <select
@@ -413,12 +413,9 @@ export function CheckoutPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-[1fr_120px]">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_130px]">
                       <div className="flex flex-col gap-1.5">
-                        <label
-                          htmlFor="street"
-                          className="text-[13px] font-medium text-foreground"
-                        >
+                        <label htmlFor="street" className={labelClass}>
                           Rua
                         </label>
                         <input
@@ -434,10 +431,7 @@ export function CheckoutPage() {
                       </div>
 
                       <div className="flex flex-col gap-1.5">
-                        <label
-                          htmlFor="number"
-                          className="text-[13px] font-medium text-foreground"
-                        >
+                        <label htmlFor="number" className={labelClass}>
                           Número
                         </label>
                         <input
@@ -455,12 +449,9 @@ export function CheckoutPage() {
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                      <label
-                        htmlFor="complement"
-                        className="text-[13px] font-medium text-foreground"
-                      >
+                      <label htmlFor="complement" className={labelClass}>
                         Complemento{" "}
-                        <span className="text-muted">(opcional)</span>
+                        <span className="text-muted font-normal">(opcional)</span>
                       </label>
                       <input
                         id="complement"
@@ -475,12 +466,9 @@ export function CheckoutPage() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div className="flex flex-col gap-1.5">
-                        <label
-                          htmlFor="neighborhood"
-                          className="text-[13px] font-medium text-foreground"
-                        >
+                        <label htmlFor="neighborhood" className={labelClass}>
                           Bairro
                         </label>
                         <input
@@ -498,10 +486,7 @@ export function CheckoutPage() {
                       </div>
 
                       <div className="flex flex-col gap-1.5">
-                        <label
-                          htmlFor="city"
-                          className="text-[13px] font-medium text-foreground"
-                        >
+                        <label htmlFor="city" className={labelClass}>
                           Cidade
                         </label>
                         <input
@@ -519,15 +504,18 @@ export function CheckoutPage() {
                   </div>
                 </div>
 
-                <div className={sectionCard}>
-                  <div className={sectionHeader}>
-                    <span className={sectionIcon}>
+                <div className={card}>
+                  <div className={sectionHead}>
+                    <span className={sectionIconCircle}>
                       <CreditCard className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
                     </span>
-                    <h2 className={sectionTitle}>Forma de pagamento</h2>
+                    <div>
+                      <h2 className={sectionTitle}>Forma de pagamento</h2>
+                      <p className="text-[12px] text-muted">Escolha como deseja pagar</p>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-2">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     {paymentOptions.map((option) => {
                       const Icon = option.icon;
                       const isSelected = paymentMethod === option.value;
@@ -538,79 +526,90 @@ export function CheckoutPage() {
                           onClick={() => setPaymentMethod(option.value)}
                           aria-checked={isSelected}
                           role="radio"
-                          className={`flex items-center gap-3 rounded-lg border px-3.5 py-3 text-left transition-colors duration-150 min-w-0 ${
+                          className={`group flex flex-col items-center gap-2.5 rounded-xl border-2 px-4 py-5 text-center transition-all duration-150 min-w-0 ${
                             isSelected
-                              ? "border-forest bg-forest/[0.03]"
-                              : "border-border/70 bg-white hover:border-muted/50"
+                              ? "border-forest bg-forest/[0.04] shadow-[0_0_0_1px_rgba(38,55,40,0.1)]"
+                              : "border-border/60 bg-white hover:border-muted/60"
                           }`}
                         >
                           <span
-                            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors duration-150 ${
-                              isSelected ? "bg-forest text-white" : "bg-sand/50 text-muted"
+                            className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-150 ${
+                              isSelected
+                                ? "bg-forest text-white shadow-sm shadow-forest/20"
+                                : "bg-sand/50 text-muted group-hover:bg-sand/70"
                             }`}
                           >
-                            <Icon className="h-[18px] w-[18px]" strokeWidth={1.8} aria-hidden="true" />
+                            <Icon className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
                           </span>
-                          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                            <span className={`text-[13px] ${isSelected ? "font-semibold text-foreground" : "font-medium text-foreground"}`}>
+                          <div className="flex flex-col gap-0.5">
+                            <span
+                              className={`text-[13px] ${
+                                isSelected
+                                  ? "font-bold text-foreground"
+                                  : "font-medium text-foreground"
+                              }`}
+                            >
                               {option.label}
                             </span>
-                            <span className="text-[11px] text-muted">
+                            <span className="text-[11px] leading-snug text-muted">
                               {option.description}
                             </span>
                           </div>
                           <span
-                            className={`ml-auto h-4 w-4 shrink-0 rounded-full border-[1.5px] transition-colors duration-150 ${
-                              isSelected
-                                ? "border-forest bg-forest"
-                                : "border-muted/30"
+                            className={`h-2 w-2 rounded-full transition-colors duration-150 ${
+                              isSelected ? "bg-forest" : "bg-border"
                             }`}
-                          >
-                            {isSelected && (
-                              <span className="flex h-full w-full items-center justify-center">
-                                <span className="h-[5px] w-[5px] rounded-full bg-white" />
-                              </span>
-                            )}
-                          </span>
+                          />
                         </button>
                       );
                     })}
                   </div>
 
                   {paymentMethod !== "pix" && (
-                    <p className="mt-3 text-[12px] text-muted">
+                    <p className="mt-4 text-[12px] text-muted">
                       Pagamento processado com segurança pela Appmax.
                     </p>
                   )}
                 </div>
 
-                <div className="flex items-start gap-3 rounded-xl border border-border/50 bg-surface-strong px-4 py-3.5 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-                  <LockKeyhole className="mt-0.5 h-4 w-4 shrink-0 text-forest/60" aria-hidden="true" />
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[13px] font-medium text-foreground">
-                      Pagamento protegido
-                    </span>
-                    <span className="text-[12px] leading-relaxed text-muted">
-                      Seus dados são usados somente para processar e entregar seu pedido.
-                    </span>
-                  </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  {trustItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <div
+                        key={item.label}
+                        className="flex items-center gap-2.5 rounded-xl border border-border/40 bg-white px-3.5 py-3"
+                      >
+                        <Icon className="h-4 w-4 shrink-0 text-forest/60" aria-hidden="true" />
+                        <span className="text-[12px] font-medium text-muted">
+                          {item.label}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
 
-                <div className="pb-4 lg:hidden">
-                  <Button type="submit" variant="cta" size="full">
-                    {getButtonLabel()}
+                <div className="pb-2 lg:hidden">
+                  <Button type="submit" variant="cta" size="full" className="h-[56px] rounded-2xl text-[14px] shadow-lg shadow-cta/20">
+                    <span className="flex items-center gap-2">
+                      {getButtonLabel()}
+                      <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                    </span>
                   </Button>
                 </div>
 
                 <div className="hidden lg:block">
-                  <Button type="submit" variant="cta" size="full">
-                    {getButtonLabel()}
+                  <Button type="submit" variant="cta" size="full" className="h-[56px] rounded-2xl text-[14px] shadow-lg shadow-cta/20">
+                    <span className="flex items-center gap-2">
+                      {getButtonLabel()}
+                      <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                    </span>
                   </Button>
                 </div>
               </div>
             </form>
 
-            <aside className="min-w-0 lg:sticky lg:top-[80px] lg:self-start">
+            <aside className="min-w-0 lg:sticky lg:top-[84px] lg:self-start">
               <OrderSummary paymentMethod={paymentMethod} />
             </aside>
           </div>

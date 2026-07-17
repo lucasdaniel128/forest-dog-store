@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   CreditCard,
   Mail,
+  Timer,
 } from "lucide-react";
 import { SEO } from "@/components/seo";
 import { ProgressBar } from "@/components/checkout/progress-bar";
@@ -30,7 +31,6 @@ import {
 import {
   createPixCharge,
   getPixCharge,
- 
   type PixCharge,
 } from "@/services/pix-service";
 import { trackEvent } from "@/lib/tracking";
@@ -299,6 +299,10 @@ export function CheckoutPixPage() {
 
   const checkoutData = loadCheckoutData();
 
+  const headerClass = "sticky top-0 z-50 w-full border-b border-border/40 bg-white/95 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-xl";
+  const headerInner = "mx-auto flex h-[60px] max-w-7xl items-center justify-between px-4 sm:h-[64px] sm:px-6 lg:px-8";
+  const card = "rounded-2xl border border-border bg-surface-strong p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] sm:p-6";
+
   return (
     <>
       <SEO
@@ -306,40 +310,43 @@ export function CheckoutPixPage() {
         description="Finalize seu pagamento via Pix."
       />
 
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-surface/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-[58px] max-w-7xl items-center justify-between px-4 sm:h-[64px] sm:px-6 lg:px-8">
+      <header className={headerClass}>
+        <div className={headerInner}>
           <button
             onClick={handleBackToCheckout}
-            className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
+            className="flex items-center gap-1.5 text-[13px] text-muted transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             <span className="hidden sm:inline">Voltar</span>
           </button>
 
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-forest text-white">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-forest text-white shadow-sm shadow-forest/20">
               <TreePine className="h-4 w-4" aria-hidden="true" />
             </span>
-            <span className="text-sm font-bold tracking-tight text-foreground">
+            <span className="text-[14px] font-bold tracking-tight text-foreground">
               {SITE_CONFIG.name}
             </span>
           </div>
 
-          <span className="text-xs text-muted">Checkout seguro</span>
+          <div className="flex items-center gap-1.5 rounded-full bg-forest/5 px-3 py-1.5">
+            <ShieldCheck className="h-3.5 w-3.5 text-forest" aria-hidden="true" />
+            <span className="text-[11px] font-semibold text-forest">Ambiente seguro</span>
+          </div>
         </div>
       </header>
 
       <main className="bg-background">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-          <div className="mb-8">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
+          <div className="mb-6 sm:mb-8">
             <ProgressBar currentStep={2} />
           </div>
 
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_360px] lg:gap-14">
-            <div className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 gap-8 min-w-0 lg:grid-cols-[1fr_380px] lg:gap-10">
+            <div className="flex flex-col gap-5 min-w-0">
               {pageState.kind === "loading" && (
                 <div
-                  className="flex flex-col items-center gap-6 rounded-2xl border border-border bg-surface-strong px-6 py-12 sm:px-10"
+                  className={`${card} flex flex-col items-center gap-6 py-12 sm:py-16`}
                   aria-live="polite"
                 >
                   <div className="relative">
@@ -362,7 +369,7 @@ export function CheckoutPixPage() {
                     </p>
                   </div>
 
-                  <div className="w-full max-w-xs rounded-xl border border-border bg-background p-4">
+                  <div className="w-full max-w-xs rounded-xl border border-border/60 bg-background p-4">
                     <div className="flex flex-col gap-2 text-[13px]">
                       <div className="flex justify-between">
                         <span className="text-muted">Produto</span>
@@ -372,7 +379,7 @@ export function CheckoutPixPage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted">Total</span>
-                        <span className="font-semibold text-foreground">
+                        <span className="font-bold text-foreground">
                           {formatPrice(16499)}
                         </span>
                       </div>
@@ -383,7 +390,7 @@ export function CheckoutPixPage() {
 
               {pageState.kind === "paid" && (
                 <div
-                  className="flex flex-col items-center gap-6 rounded-2xl border border-green-200 bg-green-50/50 px-6 py-12 sm:px-10"
+                  className={`${card} flex flex-col items-center gap-6 border-green-200 bg-green-50/50 py-12 sm:py-16`}
                   aria-live="polite"
                 >
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
@@ -401,7 +408,7 @@ export function CheckoutPixPage() {
               )}
 
               {pageState.kind === "error" && (
-                <div className="flex flex-col items-center gap-6 rounded-2xl border border-border bg-surface-strong px-6 py-10 sm:px-10" role="alert">
+                <div className={`${card} flex flex-col items-center gap-6 py-10 sm:py-12`} role="alert">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50">
                     <AlertCircle className="h-7 w-7 text-red-500" aria-hidden="true" />
                   </div>
@@ -420,14 +427,14 @@ export function CheckoutPixPage() {
                   <div className="flex flex-col gap-3">
                     <button
                       onClick={handleRetry}
-                      className="flex items-center justify-center gap-2 rounded-xl bg-cta px-8 py-3 text-sm font-bold text-white transition-colors hover:bg-cta-hover"
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-cta px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-cta/20 transition-colors hover:bg-cta-hover"
                     >
                       <RefreshCw className="h-4 w-4" aria-hidden="true" />
                       Tentar novamente
                     </button>
                     <button
                       onClick={handleBackToCheckout}
-                      className="rounded-xl border border-border px-8 py-3 text-sm font-medium text-muted transition-colors hover:bg-surface hover:text-foreground"
+                      className="rounded-2xl border border-border px-8 py-3 text-sm font-medium text-muted transition-colors hover:bg-surface hover:text-foreground"
                     >
                       Voltar ao checkout
                     </button>
@@ -436,7 +443,7 @@ export function CheckoutPixPage() {
               )}
 
               {pageState.kind === "expired" && (
-                <div className="flex flex-col items-center gap-6 rounded-2xl border border-border bg-surface-strong px-6 py-10 sm:px-10" role="alert">
+                <div className={`${card} flex flex-col items-center gap-6 py-10 sm:py-12`} role="alert">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-sand">
                     <Clock className="h-7 w-7 text-muted" aria-hidden="true" />
                   </div>
@@ -454,7 +461,7 @@ export function CheckoutPixPage() {
                   </div>
                   <button
                     onClick={handleRetry}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-cta px-8 py-3 text-sm font-bold text-white transition-colors hover:bg-cta-hover"
+                    className="flex items-center justify-center gap-2 rounded-2xl bg-cta px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-cta/20 transition-colors hover:bg-cta-hover"
                   >
                     <RefreshCw className="h-4 w-4" aria-hidden="true" />
                     Gerar novo Pix
@@ -463,7 +470,7 @@ export function CheckoutPixPage() {
               )}
 
               {pageState.kind === "failed" && (
-                <div className="flex flex-col items-center gap-6 rounded-2xl border border-border bg-surface-strong px-6 py-10 sm:px-10" role="alert">
+                <div className={`${card} flex flex-col items-center gap-6 py-10 sm:py-12`} role="alert">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-50">
                     <AlertCircle className="h-7 w-7 text-red-500" aria-hidden="true" />
                   </div>
@@ -481,7 +488,7 @@ export function CheckoutPixPage() {
                   </div>
                   <button
                     onClick={handleRetry}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-cta px-8 py-3 text-sm font-bold text-white transition-colors hover:bg-cta-hover"
+                    className="flex items-center justify-center gap-2 rounded-2xl bg-cta px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-cta/20 transition-colors hover:bg-cta-hover"
                   >
                     <RefreshCw className="h-4 w-4" aria-hidden="true" />
                     Tentar novamente
@@ -495,13 +502,16 @@ export function CheckoutPixPage() {
                     <h1
                       ref={titleRef}
                       tabIndex={-1}
-                      className="text-lg font-bold tracking-tight text-foreground outline-none"
+                      className="text-[22px] font-extrabold tracking-tight text-foreground outline-none sm:text-[26px]"
                     >
                       Pagamento via Pix
                     </h1>
+                    <p className="mt-1.5 text-[14px] text-muted">
+                      Escaneie o QR Code ou copie o código abaixo.
+                    </p>
                     <p className="mt-1 text-[15px] text-muted">
                       Total:{" "}
-                      <span className="font-semibold text-foreground">
+                      <span className="font-bold text-foreground">
                         {formatPrice(16499)}
                       </span>
                     </p>
@@ -513,7 +523,7 @@ export function CheckoutPixPage() {
                   >
                     <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-amber-500" aria-hidden="true" />
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium text-foreground">
+                      <span className="text-sm font-semibold text-foreground">
                         Aguardando pagamento
                       </span>
                       <span className="text-[12px] text-muted">
@@ -522,74 +532,81 @@ export function CheckoutPixPage() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-center gap-5 rounded-2xl border border-border bg-surface-strong px-6 py-8 sm:px-8">
-                    {pageState.charge.qr_code_image ? (
-                      <div className="flex w-full max-w-[260px] items-center justify-center rounded-xl bg-white p-4">
-                        <img
-                          src={pageState.charge.qr_code_image}
-                          alt="QR Code para pagamento Pix do pedido Forest Dog"
-                          className="h-auto w-full max-h-[240px] object-contain"
-                          style={{ imageRendering: "pixelated" }}
-                        />
-                      </div>
-                    ) : (
-                      <p className="text-center text-[13px] text-muted">
-                        Use o código Pix abaixo para realizar o pagamento.
-                      </p>
-                    )}
-
-                    {pageState.charge.qr_code && (
-                      <div className="flex w-full flex-col gap-3">
-                        <span className="text-xs font-semibold uppercase tracking-wider text-muted">
-                          Pix Copia e Cola
-                        </span>
-                        <div className="relative rounded-xl border border-border bg-background">
-                          <pre className="overflow-x-auto whitespace-pre-wrap break-all px-4 py-3 font-mono text-[12px] leading-relaxed text-muted select-all">
-                            {pageState.charge.qr_code}
-                          </pre>
+                  <div className="rounded-2xl border border-border bg-surface-strong p-5 shadow-[0_1px_4px_rgba(0,0,0,0.04)] sm:p-6">
+                    <div className="flex flex-col items-center gap-5">
+                      {pageState.charge.qr_code_image ? (
+                        <div className="flex w-full max-w-[280px] items-center justify-center rounded-xl bg-white p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.04)]">
+                          <img
+                            src={pageState.charge.qr_code_image}
+                            alt="QR Code para pagamento Pix do pedido Forest Dog"
+                            className="h-auto w-full max-h-[260px] object-contain"
+                            style={{ imageRendering: "pixelated" }}
+                          />
                         </div>
+                      ) : (
+                        <p className="text-center text-[13px] text-muted">
+                          Use o código Pix abaixo para realizar o pagamento.
+                        </p>
+                      )}
 
-                        <button
-                          onClick={handleCopy}
-                          className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-forest text-sm font-bold text-white transition-colors hover:bg-forest-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
-                          aria-label={copied ? "Código copiado" : "Copiar código Pix"}
-                        >
-                          {copied ? (
-                            <>
-                              <Check className="h-4 w-4" aria-hidden="true" />
-                              CÓDIGO COPIADO
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="h-4 w-4" aria-hidden="true" />
-                              COPIAR CÓDIGO PIX
-                            </>
+                      <p className="text-center text-[12px] text-muted">
+                        Abra o app do seu banco e escaneie o código.
+                      </p>
+
+                      {pageState.charge.qr_code && (
+                        <div className="flex w-full flex-col gap-3">
+                          <span className="text-xs font-bold uppercase tracking-widest text-muted">
+                            Pix Copia e Cola
+                          </span>
+                          <div className="relative rounded-xl border border-border/60 bg-background">
+                            <pre className="overflow-x-auto whitespace-pre-wrap break-all px-4 py-3.5 font-mono text-[11px] leading-relaxed text-muted select-all">
+                              {pageState.charge.qr_code}
+                            </pre>
+                          </div>
+
+                          <button
+                            onClick={handleCopy}
+                            className="flex h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-forest text-sm font-bold text-white shadow-lg shadow-forest/20 transition-colors hover:bg-forest-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+                            aria-label={copied ? "Código copiado" : "Copiar código Pix"}
+                          >
+                            {copied ? (
+                              <>
+                                <Check className="h-4 w-4" aria-hidden="true" />
+                                CÓDIGO COPIADO
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="h-4 w-4" aria-hidden="true" />
+                                COPIAR CÓDIGO PIX
+                              </>
+                            )}
+                          </button>
+
+                          {copyFailed && (
+                            <p className="text-center text-[12px] text-muted" role="status" aria-live="polite">
+                              Selecione e copie o código manualmente.
+                            </p>
                           )}
-                        </button>
-
-                        {copyFailed && (
-                          <p className="text-center text-[12px] text-muted" role="status" aria-live="polite">
-                            Selecione e copie o código manualmente.
-                          </p>
-                        )}
-                        {copied && (
-                          <p className="text-center text-[12px] text-green-600" role="status" aria-live="polite">
-                            Código copiado
-                          </p>
-                        )}
-                      </div>
-                    )}
+                          {copied && (
+                            <p className="text-center text-[12px] text-green-600 font-medium" role="status" aria-live="polite">
+                              Código copiado
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div
-                    className="flex flex-col items-center gap-2 rounded-xl border border-border bg-surface-strong px-4 py-3 text-center"
+                    className="flex items-center justify-center gap-2.5 rounded-xl border border-border/60 bg-white px-4 py-3"
                     aria-live="polite"
                     aria-atomic="true"
                   >
+                    <Timer className="h-4 w-4 text-muted" aria-hidden="true" />
                     <span className="text-[13px] text-muted">
-                      Pix válido por:{" "}
+                      Pix válido por{" "}
                       <span
-                        className={`font-mono font-semibold tabular-nums ${
+                        className={`font-mono font-bold tabular-nums ${
                           isUrgent(pageState.charge.expires_at) ? "text-amber-600" : "text-foreground"
                         }`}
                       >
@@ -601,8 +618,8 @@ export function CheckoutPixPage() {
                     </span>
                   </div>
 
-                  <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-strong p-5">
-                    <h2 className="text-sm font-bold tracking-tight text-foreground">
+                  <div className={`${card} p-5`}>
+                    <h2 className="mb-3 text-sm font-bold tracking-tight text-foreground">
                       Informações da compra
                     </h2>
                     <ul className="flex flex-col gap-3 text-[13px] text-muted">
@@ -634,14 +651,14 @@ export function CheckoutPixPage() {
               )}
             </div>
 
-            <aside className="lg:sticky lg:top-[88px] lg:self-start">
+            <aside className="min-w-0 lg:sticky lg:top-[84px] lg:self-start">
               <OrderSummary />
               {checkoutData && pageState.kind === "charge" && pageState.charge.status === "pending" && (
-                <div className="mt-4 rounded-2xl border border-border bg-surface-strong p-4">
-                  <h3 className="text-xs font-bold tracking-tight text-foreground">
+                <div className="mt-4 rounded-2xl border border-border bg-surface-strong p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)]">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-muted">
                     Dados utilizados
                   </h3>
-                  <div className="mt-2 flex flex-col gap-1.5 text-[12px]">
+                  <div className="mt-3 flex flex-col gap-2 text-[12px]">
                     <div className="flex justify-between">
                       <span className="text-muted">E-mail</span>
                       <span className="font-medium text-foreground">
