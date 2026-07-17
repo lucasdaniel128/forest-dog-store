@@ -1,11 +1,28 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Package } from "lucide-react";
 import { SEO } from "@/components/seo";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { Button } from "@/components/ui/button";
 
+interface LocationState {
+  orderId?: string;
+  email?: string;
+}
+
+function maskEmail(email: string): string {
+  const [local, domain] = email.split("@");
+  if (!local || !domain) return email;
+  if (local.length <= 2) return `${local[0]}***@${domain}`;
+  return `${local[0]}${"*".repeat(local.length - 2)}${local[local.length - 1]}@${domain}`;
+}
+
 export function RastrearPedidoPage() {
+  const location = useLocation();
+  const state = (location.state as LocationState) ?? {};
   const [code, setCode] = useState("");
+  const hasOrderContext = Boolean(state.orderId);
 
   return (
     <>
@@ -19,10 +36,32 @@ export function RastrearPedidoPage() {
           <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
             Rastrear Pedido
           </h1>
+
+          {hasOrderContext && (
+            <div className="mt-6 flex items-start gap-3 rounded-2xl border border-border bg-surface-strong p-5">
+              <Package className="mt-0.5 h-5 w-5 shrink-0 text-cta" aria-hidden="true" />
+              <div className="flex flex-col gap-1 text-[14px]">
+                <span className="font-medium text-foreground">
+                  Pedido {state.orderId}
+                </span>
+                {state.email && (
+                  <span className="text-muted">
+                    {maskEmail(state.email)}
+                  </span>
+                )}
+                <span className="mt-1 text-[13px] text-muted">
+                  Pedido recebido. O código de rastreio ficará disponível após a postagem.
+                </span>
+              </div>
+            </div>
+          )}
+
           <div className="mt-8 flex flex-col gap-6 text-[15px] leading-relaxed text-muted">
-            <p>
-              Informe o código de rastreio enviado para o seu e-mail após a postagem do pedido.
-            </p>
+            {!hasOrderContext && (
+              <p>
+                Informe o código de rastreio enviado para o seu e-mail após a postagem do pedido.
+              </p>
+            )}
 
             <form
               onSubmit={(e) => e.preventDefault()}

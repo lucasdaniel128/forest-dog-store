@@ -1,6 +1,6 @@
 import { useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
-import { PRODUCT } from "@/constants";
 import { Button } from "@/components/ui/button";
 import { VideoMedia } from "@/components/media/video-media";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
@@ -10,13 +10,11 @@ import posterImage from "@/assets/images/D_NQ_NP_2X_981066-MLA113602445263_06202
 export function OpeningDemoSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const navigate = useNavigate();
 
   const handleCTAClick = useCallback(() => {
-    const section = document.getElementById(PRODUCT.purchaseSectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  }, []);
+    navigate("/checkout");
+  }, [navigate]);
 
   return (
     <section className="bg-forest-dark">

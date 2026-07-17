@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { PRODUCT } from "@/constants";
 import { useMediaQuery } from "@/hooks";
@@ -8,13 +9,11 @@ export function MobilePurchaseBar() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isVisible, setIsVisible] = useState(false);
   const [hideBar, setHideBar] = useState(false);
+  const navigate = useNavigate();
 
   const handleCTAClick = useCallback(() => {
-    const section = document.getElementById(PRODUCT.purchaseSectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  }, []);
+    navigate("/checkout");
+  }, [navigate]);
 
   useEffect(() => {
     if (!isMobile) {

@@ -6,6 +6,10 @@ import { TermosDeUsoPage } from "@/pages";
 import { TrocasEDevolucoesPage } from "@/pages";
 import { ContatoPage } from "@/pages";
 import { RastrearPedidoPage } from "@/pages";
+import { CheckoutPage } from "@/pages";
+import { CheckoutPixPage } from "@/pages";
+import { CheckoutSucessoPage } from "@/pages";
+import { NotFoundPage } from "@/pages";
 
 export default function App() {
   return (
@@ -18,6 +22,10 @@ export default function App() {
           <Route path="/trocas-e-devolucoes" element={<TrocasEDevolucoesPage />} />
           <Route path="/contato" element={<ContatoPage />} />
           <Route path="/rastrear-pedido" element={<RastrearPedidoPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/checkout/pix" element={<CheckoutPixPage />} />
+          <Route path="/checkout/sucesso" element={<CheckoutSucessoPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </Providers>

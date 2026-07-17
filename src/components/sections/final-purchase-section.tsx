@@ -1,4 +1,5 @@
 import { useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import { PRODUCT } from "@/constants";
 import { Button } from "@/components/ui/button";
@@ -7,13 +8,11 @@ import { fadeInUp, staggerContainer } from "@/lib/animations";
 export function FinalPurchaseSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const navigate = useNavigate();
 
   const handleCTAClick = useCallback(() => {
-    const section = document.getElementById(PRODUCT.purchaseSectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  }, []);
+    navigate("/checkout");
+  }, [navigate]);
 
   return (
     <section className="bg-forest-dark">

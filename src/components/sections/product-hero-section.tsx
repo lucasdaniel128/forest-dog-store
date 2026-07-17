@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PRODUCT } from "@/constants";
 import { Button } from "@/components/ui/button";
@@ -6,12 +7,11 @@ import { ProductMediaGallery } from "@/components/product/product-media-gallery"
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 
 export function ProductHeroSection() {
+  const navigate = useNavigate();
+
   const handleCTAClick = useCallback(() => {
-    const section = document.getElementById(PRODUCT.purchaseSectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  }, []);
+    navigate("/checkout");
+  }, [navigate]);
 
   return (
     <section className="bg-background" id="hero">

@@ -4,3 +4,7 @@ export { TermosDeUsoPage } from "./termos-de-uso";
 export { TrocasEDevolucoesPage } from "./trocas-e-devolucoes";
 export { ContatoPage } from "./contato";
 export { RastrearPedidoPage } from "./rastrear-pedido";
+export { CheckoutPage } from "./checkout";
+export { CheckoutPixPage } from "./checkout-pix";
+export { CheckoutSucessoPage } from "./checkout-sucesso";
+export { NotFoundPage } from "./not-found";
