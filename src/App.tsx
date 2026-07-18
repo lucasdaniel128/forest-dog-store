@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Providers } from "@/providers";
+import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { LandingPage } from "@/pages";
 import { PoliticaDePrivacidadePage } from "@/pages";
 import { TermosDeUsoPage } from "@/pages";
@@ -15,6 +16,7 @@ export default function App() {
   return (
     <Providers>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/politica-de-privacidade" element={<PoliticaDePrivacidadePage />} />
