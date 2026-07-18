@@ -28,10 +28,10 @@ export function OpeningDemoSection() {
         >
           <motion.div variants={fadeInUp} className="max-w-xl text-center">
             <h2 className="text-[1.75rem] font-extrabold leading-[1.08] tracking-tight text-white sm:text-3xl lg:text-4xl">
-              Veja como funciona o sistema de abertura.
+              Veja como funciona o sistema de abertura
             </h2>
             <p className="mt-4 text-[15px] leading-relaxed text-white/50">
-              O vídeo mostra a preparação da barraca e sua abertura prática.
+              O vídeo demonstra a preparação da barraca e sua estrutura.
             </p>
           </motion.div>
 

@@ -3,7 +3,6 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { ProductHeroSection } from "@/components/sections/product-hero-section";
 import { BenefitStrip } from "@/components/sections/benefit-strip";
-import { StorySection } from "@/components/sections/story-section";
 import { OpeningDemoSection } from "@/components/sections/opening-demo-section";
 import { ProductDetailsSection } from "@/components/sections/product-details-section";
 import { ComparisonSection } from "@/components/sections/comparison-section";
@@ -23,7 +22,6 @@ export function LandingPage() {
       <SiteHeader />
       <ProductHeroSection />
       <BenefitStrip />
-      <StorySection />
       <OpeningDemoSection />
       <ProductDetailsSection />
       <ComparisonSection />

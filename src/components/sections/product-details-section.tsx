@@ -2,8 +2,9 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import img980271 from "@/assets/images/D_NQ_NP_2X_980271-MLA112438593888_062026-F.webp";
-import img884669 from "@/assets/images/D_NQ_NP_2X_884669-MLA112438799594_062026-F.webp";
 import img736749 from "@/assets/images/D_NQ_NP_2X_736749-MLA113602768169_062026-F.webp";
+import img753543 from "@/assets/images/D_NQ_NP_2X_753543-MLA113602445287_062026-F.webp";
+import img884669 from "@/assets/images/D_NQ_NP_2X_884669-MLA112438799594_062026-F.webp";
 
 const DETAILS = [
   {
@@ -13,16 +14,22 @@ const DETAILS = [
     text: "Modelo anunciado para acomodar de 5 a 6 pessoas.",
   },
   {
-    image: img884669,
-    alt: "Barraca Joyfox — compacta para transporte e armazenamento",
-    title: "Fácil de transportar",
-    text: "Formato pensado para facilitar o transporte e o armazenamento.",
+    image: img736749,
+    alt: "Barraca Joyfox — estrutura de abertura automática",
+    title: "Estrutura de abertura",
+    text: "Sistema de abertura automática para maior praticidade.",
   },
   {
-    image: img736749,
-    alt: "Barraca Joyfox — praticidade para camping e viagens",
-    title: "Praticidade para o lazer",
-    text: "Uma opção para camping, viagens e momentos ao ar livre.",
+    image: img753543,
+    alt: "Barraca Joyfox — ventilação e conforto",
+    title: "Ventilação",
+    text: "Projetada para oferecer ventilação e conforto em diferentes situações.",
+  },
+  {
+    image: img884669,
+    alt: "Barraca Joyfox — compacta para transporte e armazenamento",
+    title: "Transporte",
+    text: "Formato pensado para facilitar o transporte e o armazenamento.",
   },
 ] as const;
 
@@ -42,7 +49,7 @@ export function ProductDetailsSection() {
         >
           <motion.div variants={fadeInUp} className="text-center">
             <h2 className="text-[1.75rem] font-extrabold leading-[1.08] tracking-tight text-foreground sm:text-3xl lg:text-4xl">
-              Como a Joyfox transforma seu camping.
+              Como a Joyfox transforma seu camping
             </h2>
           </motion.div>
 

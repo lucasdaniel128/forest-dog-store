@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { TreePine } from "lucide-react";
 import { SITE_CONFIG } from "@/constants";
+import logoImg from "@/assets/images/forest-dog-logo-horizontal.png";
 
 const LINKS = [
   { label: "Política de Privacidade", href: "/politica-de-privacidade" },
@@ -15,19 +15,11 @@ export function SiteFooter() {
     <footer className="border-t border-border/40 bg-surface">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="flex flex-col items-center gap-8">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-forest text-white">
-              <TreePine className="h-3.5 w-3.5" aria-hidden="true" />
-            </span>
-            <div className="flex flex-col">
-              <span className="text-sm font-bold tracking-tight text-foreground">
-                {SITE_CONFIG.name}
-              </span>
-              <span className="text-[10px] leading-tight text-muted">
-                {SITE_CONFIG.tagline}
-              </span>
-            </div>
-          </div>
+          <img
+            src={logoImg}
+            alt={SITE_CONFIG.name}
+            className="h-8 max-h-10 w-auto object-contain"
+          />
 
           <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             {LINKS.map((link) => (

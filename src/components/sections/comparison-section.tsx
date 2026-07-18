@@ -1,77 +1,55 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { fadeInUp, staggerContainer, staggerItem } from "@/lib/animations";
-import comparisonImage from "@/assets/images/D_NQ_NP_2X_613303-MLA113602768109_062026-F.webp";
 
-const CRITERIA = [
-  { label: "Montagem", traditional: "Montagem manual com peças separadas", joyfox: "Sistema de abertura prática" },
-  { label: "Uso", traditional: "Mais etapas para começar a aproveitar", joyfox: "Rápida preparação para uso" },
-  { label: "Transporte", traditional: "Volume maior e mais difícil de carregar", joyfox: "Compacta e fácil de transportar" },
-  { label: "Preparação", traditional: "Mais tempo dedicado à montagem", joyfox: "Mais tempo aproveitando o local" },
+const ROWS = [
+  { label: "Montagem", traditional: "Mais etapas na montagem", joyfox: "Sistema de abertura prática" },
+  { label: " Estrutura", traditional: "Mais peças separadas", joyfox: "Estrutura integrada" },
+  { label: "Preparação", traditional: "Preparação mais demorada", joyfox: "Preparação simplificada" },
 ] as const;
 
 export function ComparisonSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section className="bg-forest-dark">
-      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
+    <section className="bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
         <motion.div
           ref={ref}
           variants={staggerContainer}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="flex flex-col items-center gap-14 lg:gap-20"
+          className="flex flex-col items-center gap-10"
         >
-          <motion.div variants={fadeInUp} className="max-w-xl text-center">
-            <h2 className="text-[1.75rem] font-extrabold leading-[1.08] tracking-tight text-white sm:text-3xl lg:text-4xl">
-              Mais praticidade na preparação do acampamento.
+          <motion.div variants={fadeInUp} className="text-center">
+            <h2 className="text-[1.5rem] font-extrabold leading-[1.1] tracking-tight text-foreground sm:text-2xl lg:text-[1.75rem]">
+              Mais praticidade na preparação do camping
             </h2>
           </motion.div>
 
           <motion.div
             variants={staggerContainer}
-            className="grid w-full max-w-3xl grid-cols-1 gap-6 sm:grid-cols-2"
+            className="w-full max-w-2xl overflow-hidden rounded-xl border border-border/60"
           >
-            {CRITERIA.map((row) => (
+            <div className="grid grid-cols-[1fr_1fr_1.2fr] bg-forest px-5 py-3 text-[12px] font-bold uppercase tracking-wider text-white/70">
+              <span></span>
+              <span className="text-center">Tradicional</span>
+              <span className="text-center text-white">Joyfox</span>
+            </div>
+            {ROWS.map((row, i) => (
               <motion.div
                 key={row.label}
                 variants={staggerItem}
-                className="flex flex-col gap-4 rounded-2xl bg-white/[0.04] p-6"
+                className={`grid grid-cols-[1fr_1fr_1.2fr] px-5 py-4 text-[13px] ${
+                  i % 2 === 0 ? "bg-white" : "bg-surface"
+                }`}
               >
-                <span className="text-sm font-bold uppercase tracking-wider text-white/50">
-                  {row.label}
-                </span>
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-start gap-3">
-                    <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-white/20" />
-                    <span className="text-[14px] leading-snug text-white/35">
-                      {row.traditional}
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cta" />
-                    <span className="text-[14px] font-medium leading-snug text-white">
-                      {row.joyfox}
-                    </span>
-                  </div>
-                </div>
+                <span className="font-semibold text-foreground">{row.label}</span>
+                <span className="text-center text-muted">{row.traditional}</span>
+                <span className="text-center font-medium text-foreground">{row.joyfox}</span>
               </motion.div>
             ))}
-          </motion.div>
-
-          <motion.div variants={fadeInUp} className="w-full max-w-2xl">
-            <img
-              src={comparisonImage}
-              alt="Diagrama comparativo informativo da Barraca Automática Joyfox"
-              className="h-full w-full object-contain rounded-xl"
-              style={{ aspectRatio: "16/10" }}
-              loading="lazy"
-            />
-            <p className="mt-4 text-center text-[11px] text-white/25">
-              Imagem informativa do produto.
-            </p>
           </motion.div>
         </motion.div>
       </div>
